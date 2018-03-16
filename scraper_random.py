@@ -1,7 +1,6 @@
 import requests
 import sys
 import random
-from bs4 import BeautifulSoup
 from wikipedia import wikipedia
 from datetime import datetime
 import config
