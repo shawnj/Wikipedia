@@ -1,7 +1,6 @@
 import requests
 import sys
 import random
-from bs4 import BeautifulSoup
 from wikipedia import wikipedia
 from datetime import datetime
 import config
@@ -148,9 +147,27 @@ def main():
     values = [x for x in table_data.values()]
 
     for index, t in enumerate(keys):
-        logs = [l for l in get_logdata(str(t), 'delete') if "delet" in str(l)]
-        temps = [s for s in get_templates(str(t)) if "delet" in str(s)]
-        revs = [r for r in get_revisions(str(t),True) if "delet" in str(r)]
+        
+        phrases = [
+            "Articles for deletion",
+            "Nominated for deletion",
+            "AfD",
+            "speedy deletion",
+            "CSD",
+            "Nominated page for deletion",
+            "Proposing article for deletion",
+            "closed as delete",
+            "closed as keep",
+            "closed as no consensus",
+            "Speedy deleted",
+            "WP:CSD",
+            "WP:PROD",
+            "WP:BLPPROD"
+            ]
+
+        logs = [l for l in get_logdata(str(t), 'delete') if any(str(l).find(p)>=0 for p in phrases)]
+        temps = [s for s in get_templates(str(t)) if any(str(s).find(p)>=0 for p in phrases)]
+        revs = [r for r in get_revisions(str(t)) if any(str(r).find(p)>=0 for p in phrases)]
         task = create_task(str(DATASET_MARKER),str(CAMPAIGN_NAME),str(values[index]['TOUCHED']),str(CAMPAIGN_NAME),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(values[index]['TITLE']),logs,temps,revs,str(values[index]['URL']))
         print (task)
         tableservice.insert_entity(AZURE_TABLE, task)
