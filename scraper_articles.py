@@ -174,6 +174,7 @@ def main():
     values = [x for x in table_data.values()]
 
     for index, t in enumerate(keys):
+        
         phrases = [
             "Articles for deletion",
             "Nominated for deletion",
@@ -190,6 +191,7 @@ def main():
             "WP:PROD",
             "WP:BLPPROD"
             ]
+
         #logs = [l for l in get_logdata(str(t), 'delete') if "delet" in str(l)]
         #temps = [s for s in get_templates(str(t)) if "delet" in str(s)]
         #revs = [r for r in get_revisions(str(t)) if "delet" in str(r)]
