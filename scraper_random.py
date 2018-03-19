@@ -40,7 +40,7 @@ def has_date(item):
         _page = wikipedia.page(title=None,pageid=item)
         _dt = datetime.strptime(_page.touched,'%Y-%m-%dT%H:%M:%SZ')
         if _dt.year >= 2015:
-            _revs = get_revisions(_page.pageid,False)
+            _revs = get_revisions(_page.pageid, False)
             _tmpdt = datetime.strptime(_revs[0]['timestamp'],'%Y-%m-%dT%H:%M:%SZ')
             if _tmpdt.year >= 2015 and _tmpdt.year <= 2017:
                 return _page
@@ -49,7 +49,7 @@ def has_date(item):
         else:
             return ""
     except:
-        return ""
+        return "Error"
 
 def get_logdata(item, logtype):
     try:
@@ -65,7 +65,7 @@ def get_templates(item):
     except:
         return list()
 
-def get_revisions(item,title):
+def get_revisions(item, title):
     try:
         _revs = wikipedia.revisionsearch(item, title=title)
         return _revs
@@ -135,7 +135,10 @@ def main():
     for r in collection:
         print (r)
         _tmppge = has_date(r)
-        if _tmppge != "":
+
+        if _tmppge == "Error":
+            print ("Error")
+        elif _tmppge != "":
             table_data.update({_tmppge.title:{'PAGEID': str(_tmppge.pageid),'TOUCHED': str(_tmppge.touched), 'URL': str(_tmppge.url), 'TITLE': str(_tmppge.title)}})
             print ("Date Match")
         else:
@@ -147,7 +150,7 @@ def main():
     values = [x for x in table_data.values()]
 
     for index, t in enumerate(keys):
-        
+
         phrases = [
             "Articles for deletion",
             "Nominated for deletion",
@@ -167,7 +170,7 @@ def main():
 
         logs = [l for l in get_logdata(str(t), 'delete') if any(str(l).find(p)>=0 for p in phrases)]
         temps = [s for s in get_templates(str(t)) if any(str(s).find(p)>=0 for p in phrases)]
-        revs = [r for r in get_revisions(str(t)) if any(str(r).find(p)>=0 for p in phrases)]
+        revs = [r for r in get_revisions(str(t), True) if any(str(r).find(p)>=0 for p in phrases)]
         task = create_task(str(DATASET_MARKER),str(CAMPAIGN_NAME),str(values[index]['TOUCHED']),str(CAMPAIGN_NAME),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(values[index]['TITLE']),logs,temps,revs,str(values[index]['URL']))
         print (task)
         tableservice.insert_entity(AZURE_TABLE, task)
