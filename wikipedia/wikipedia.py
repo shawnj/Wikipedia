@@ -148,7 +148,7 @@ def rawsearch(query, results=10):
   return raw_results
 
 @cache
-def logsearch(title, logtype, results=50):
+def logsearch(title, logtype, results=max):
   '''
   Do a Wikipedia search for `query`.
 
@@ -177,7 +177,7 @@ def logsearch(title, logtype, results=50):
   return raw_results
 
 @cache
-def revisionsearch(query, title=False, results=500):
+def revisionsearch(query, title=False, results=max):
   '''
   Do a Wikipedia search for `query`.
 
@@ -189,8 +189,8 @@ def revisionsearch(query, title=False, results=500):
 
   search_params = {
     'prop': 'revisions',
-    'rvlimit': results,
-    'rvdir': 'newer'
+    'rvlimit': 'max',
+    'rvdir': 'older'
   }
 
   if title:
@@ -198,17 +198,32 @@ def revisionsearch(query, title=False, results=500):
   else:
     search_params['pageids'] = query
 
-  raw_results = _wiki_request(search_params)
+  last_continue = {}
 
-  page_id = raw_results['query']['pageids'][0]
+  search_results = list()
 
-  if 'error' in raw_results:
-    if raw_results['error']['info'] in ('HTTP request timed out.', 'Pool queue is full'):
-      raise HTTPTimeoutError(query)
-    else:
-      raise WikipediaException(raw_results['error']['info'])
+  while True:
+    params = search_params.copy()
+    params.update(last_continue)
 
-  search_results = list(raw_results['query']['pages'][page_id]['revisions'])
+    raw_results = _wiki_request(params)
+
+    if 'error' in raw_results:
+      if raw_results['error']['info'] in ('HTTP request timed out.', 'Pool queue is full'):
+        raise HTTPTimeoutError(query)
+      else:
+        raise WikipediaException(raw_results['error']['info'])
+    
+    if 'query' not in raw_results:
+      break
+
+    page_id = raw_results['query']['pageids'][0]
+    search_results.extend(raw_results['query']['pages'][page_id]['revisions'])
+
+    if 'continue' not in raw_results:
+      break
+
+    last_continue = raw_results['continue']
 
   return search_results
 
