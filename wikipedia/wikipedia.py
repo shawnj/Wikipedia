@@ -288,6 +288,57 @@ def templatesearch(title, results=500):
   return search_results
 
 @cache
+def categorysearch(title, results=500):
+  '''
+  Do a Wikipedia search for `query`.
+
+  Keyword arguments:
+
+  * results - the maxmimum number of results returned
+  * suggestion - if True, return results and suggestion (if any) in a tuple
+  '''
+
+  search_params = {
+    'list': 'categorymembers',
+    'cmlimit': results,
+    'cmtitle': title,
+    'cmdir': 'desc',
+    'cmprop': 'ids|title|type|timestamp',
+    'cmtype': 'page'
+  }
+
+  last_continue = {}
+
+  search_results = list()
+
+  while True:
+    params = search_params.copy()
+    params.update(last_continue)
+
+    raw_results = _wiki_request(params)
+
+    print(raw_results)
+
+    if 'error' in raw_results:
+      if raw_results['error']['info'] in ('HTTP request timed out.', 'Pool queue is full'):
+        raise HTTPTimeoutError(query)
+      else:
+        raise WikipediaException(raw_results['error']['info'])
+    
+    if 'query' not in raw_results:
+      break
+
+    #page_id = raw_results['query']['pageids'][0]
+    search_results.extend(raw_results['query']['categorymembers'])
+
+    if 'continue' not in raw_results:
+      break
+
+    last_continue = raw_results['continue']
+
+  return search_results
+
+@cache
 def geosearch(latitude, longitude, title=None, results=10, radius=1000):
   '''
   Do a wikipedia geo search for `latitude` and `longitude`
