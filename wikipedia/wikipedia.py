@@ -304,7 +304,7 @@ def categorysearch(title, results=500):
     'cmtitle': title,
     'cmdir': 'desc',
     'cmprop': 'ids|title|type|timestamp',
-    'cmtype': 'page'
+    'cmtype': 'page|subcat'
   }
 
   last_continue = {}
@@ -317,7 +317,7 @@ def categorysearch(title, results=500):
 
     raw_results = _wiki_request(params)
 
-    print(raw_results)
+    #print(raw_results)
 
     if 'error' in raw_results:
       if raw_results['error']['info'] in ('HTTP request timed out.', 'Pool queue is full'):
