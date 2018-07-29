@@ -103,7 +103,7 @@ def main():
     values = [x for x in table_data.values()]
 
     for index, t in enumerate(keys):
-        _revs = [r for r in get_revisions(str(t)) if "delet" in str(r)]
+        _revs = [r for r in get_revisions(str(t),title=title) if "delet" in str(r)]
         _task = create_task(str(DATASET_MARKER),str(values[index]['TOUCHED']),str(values[index]['PAGEID']),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(t),_revs,str(values[index]['URL']))
         print (_task)
         #tableservice.insert_entity(AZURE_TABLE, task)
