@@ -89,6 +89,8 @@ def main():
 
     for r in _tmpb:
         try:
+            requests.packages.urllib3.disable_warnings()
+            print(r)
             p = wikipedia.page(r)
             table_data.update({r:{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched), 'URL': str(p.url)}})
         except Exception as e:
