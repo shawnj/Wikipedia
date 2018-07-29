@@ -20,6 +20,8 @@ AZURE_TABLE=sys.argv[1]
 CATEGORY=sys.argv[2]
 STARTTIME=sys.argv[3]
 ENDTIME=sys.argv[4]
+DATASET_MARKER
+
 #FILE_NAME = sys.argv[3]
 
 def get_revisions(item, title):
@@ -37,8 +39,28 @@ def get_biographies(title,start,end):
         _bios = wikipedia.categorysearchtimestamp(title,start,end)
         return _bios
     except:
-        print( "Error: %s" % e )
+        print( "Error getting bios" )
         return list() 
+
+def create_task(dataset_marker,created,row_key,part_key,page_id,title,revs,url):
+    task = {
+        'PartitionKey': part_key, 
+        'RowKey': row_key, 
+        'PAGEID': page_id, 
+        'TOUCHED': created,
+        'TITLE': title, 
+        'URL': url,
+        'DATASET': dataset_marker
+    }
+    
+    _rtmp = []
+    for r in revs:
+        _rtmp.append(r)
+
+    if _rtmp:
+        task.update({"REVISIONS": str(_rtmp)})
+
+    return task
 
 def table_service():
     # Get storage connection string from config.py
@@ -57,7 +79,31 @@ def table_service():
 
 def main():
     _tmpb = get_biographies(CATEGORY,STARTTIME,ENDTIME)
+
     print(str(len(_tmpb)))
+
+    if len(_tmpb) == 0:
+        break
+
+    table_data = {}
+
+    for r in _tmpb:
+        try:
+            p = wikipedia.page(r)
+            table_data.update({r:{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched), 'URL': str(p.url)}})
+        except:
+            print("Error getting page.")
+
+    tableservice = table_service()
+
+    keys = [x for x in table_data.keys()]
+    values = [x for x in table_data.values()]
+
+    for index, t in enumerate(keys):
+        _revs = [r for r in get_revisions(str(t)) if "delet" in str(r)]
+        _task = create_task(str(DATASET_MARKER),str(values[index]['TOUCHED']),str(values[index]['PAGEID']),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(t),_revs,str(values[index]['URL']))
+        print (_task)
+        #tableservice.insert_entity(AZURE_TABLE, task)
 
 if __name__ == '__main__':
     main()
