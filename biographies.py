@@ -92,7 +92,7 @@ def main():
             requests.packages.urllib3.disable_warnings()
             print(r)
             p = wikipedia.page(title=None,pageid=str(r['pageid']))
-            table_data.update({str(r['pageid']):{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched), 'URL': str(p.url)}})
+            table_data.update({str(r['pageid']):{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched),'URL': str(p.url),'TITLE': str(p.title)}})
         except Exception as e:
             print("Error: %s" % e)
             continue
@@ -104,7 +104,7 @@ def main():
 
     for index, t in enumerate(keys):
         _revs = [r for r in get_revisions(str(t)) if "delet" in str(r)]
-        _task = create_task(str(DATASET_MARKER),str(values[index]['TOUCHED']),str(values[index]['PAGEID']),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(t),_revs,str(values[index]['URL']))
+        _task = create_task(str(DATASET_MARKER),str(values[index]['TOUCHED']),str(values[index]['PAGEID']),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(values[index]['TITLE']),_revs,str(values[index]['URL']))
         print (_task)
         tableservice.insert_entity(AZURE_TABLE, _task)
 
