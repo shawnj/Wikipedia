@@ -92,6 +92,7 @@ def main():
             requests.packages.urllib3.disable_warnings()
             print(r)
             p = wikipedia.page(title=None,pageid=str(r['pageid']))
+            print(p)
             table_data.update({r:{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched), 'URL': str(p.url)}})
         except Exception as e:
             print("Error: %s" % e)
