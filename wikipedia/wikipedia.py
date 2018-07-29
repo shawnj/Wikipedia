@@ -353,7 +353,6 @@ def categorysearchtimestamp(title, startime, endtime, results=500):
     'list': 'categorymembers',
     'cmlimit': results,
     'cmtitle': title,
-    'cmdir': 'desc',
     'cmstart': starttime,
     'cmend': endtime,
     'cmsort': 'timestamp',
