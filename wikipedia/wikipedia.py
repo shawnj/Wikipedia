@@ -357,7 +357,7 @@ def categorysearchtimestamp(title, starttime, endtime, results=500):
     'cmend': endtime,
     'cmsort': 'timestamp',
     'cmprop': 'ids|title|type|timestamp',
-    'cmnamspace': '(Article)'
+    'cmnamspace': '0'
   }
 
   last_continue = {}
