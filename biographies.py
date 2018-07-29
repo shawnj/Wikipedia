@@ -27,7 +27,7 @@ DATASET_MARKER=sys.argv[5]
 def get_revisions(item, title):
     try:
         requests.packages.urllib3.disable_warnings()
-        _revs = wikipedia.revisionsearch(item, title=title)
+        _revs = wikipedia.revisionsearch(item, True)
         return _revs
     except Exception as e:
         print( "Error: %s" % e )
