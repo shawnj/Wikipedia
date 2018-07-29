@@ -339,7 +339,7 @@ def categorysearch(title, results=500):
   return search_results
 
 @cache
-def categorysearchtimestamp(title, startime, endtime, results=500):
+def categorysearchtimestamp(title, starttime, endtime, results=500):
   '''
   Do a Wikipedia search for `query`.
 
