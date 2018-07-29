@@ -35,6 +35,7 @@ def get_biographies(title,start,end):
     try:
         requests.packages.urllib3.disable_warnings()
         _bios = wikipedia.categorysearchtimestamp(title,start,end)
+        return _bios
     except:
         print( "Error: %s" % e )
         return list() 
