@@ -20,7 +20,7 @@ AZURE_TABLE=sys.argv[1]
 CATEGORY=sys.argv[2]
 STARTTIME=sys.argv[3]
 ENDTIME=sys.argv[4]
-DATASET_MARKER
+DATASET_MARKER=sys.argv[5]
 
 #FILE_NAME = sys.argv[3]
 
