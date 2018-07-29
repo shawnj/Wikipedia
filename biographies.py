@@ -83,7 +83,7 @@ def main():
     print(str(len(_tmpb)))
 
     if len(_tmpb) == 0:
-        break
+        sys.exit()
 
     table_data = {}
 
