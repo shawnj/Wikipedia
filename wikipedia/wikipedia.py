@@ -356,7 +356,7 @@ def categorysearchtimestamp(title, startime, endtime, results=500):
     'cmdir': 'desc',
     'cmstart': starttime,
     'cmend': endtime,
-    'cmsort': 'timestamp'
+    'cmsort': 'timestamp',
     'cmprop': 'ids|title|type|timestamp'
   }
 
