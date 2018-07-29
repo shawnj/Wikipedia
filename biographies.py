@@ -24,10 +24,10 @@ DATASET_MARKER=sys.argv[5]
 
 #FILE_NAME = sys.argv[3]
 
-def get_revisions(item, title):
+def get_revisions(item):
     try:
         requests.packages.urllib3.disable_warnings()
-        _revs = wikipedia.revisionsearch(item, True)
+        _revs = wikipedia.revisionsearch(item)
         return _revs
     except Exception as e:
         print( "Error: %s" % e )
@@ -92,7 +92,7 @@ def main():
             requests.packages.urllib3.disable_warnings()
             print(r)
             p = wikipedia.page(title=None,pageid=str(r['pageid']))
-            table_data.update({str(r['title']):{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched), 'URL': str(p.url)}})
+            table_data.update({str(r['pageid']):{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched), 'URL': str(p.url)}})
         except Exception as e:
             print("Error: %s" % e)
             continue
@@ -103,7 +103,7 @@ def main():
     values = [x for x in table_data.values()]
 
     for index, t in enumerate(keys):
-        _revs = [r for r in get_revisions(str(t),title=title) if "delet" in str(r)]
+        _revs = [r for r in get_revisions(str(t)) if "delet" in str(r)]
         _task = create_task(str(DATASET_MARKER),str(values[index]['TOUCHED']),str(values[index]['PAGEID']),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(t),_revs,str(values[index]['URL']))
         print (_task)
         #tableservice.insert_entity(AZURE_TABLE, task)
