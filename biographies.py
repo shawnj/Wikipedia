@@ -94,7 +94,7 @@ def main():
             requests.packages.urllib3.disable_warnings()
             print(r)
             p = wikipedia.page(title=None,pageid=str(r['pageid']))
-            _revs = [r for r in get_revisions(str(t)) if "delet" in str(r)]
+            _revs = [r for r in get_revisions(str(p.pageid)) if "delet" in str(r)]
             #table_data.update({str(r['pageid']):{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched),'URL': str(p.url),'TITLE': str(p.title)}})
             _task = create_task(str(DATASET_MARKER),str(p.touched),str(p.pageid),str(random.randint(100000,99999999)),str(p.pageid),str(p.title),_revs,str(p.url))
             print (_task)
