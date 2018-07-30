@@ -98,7 +98,7 @@ def main():
             #table_data.update({str(r['pageid']):{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched),'URL': str(p.url),'TITLE': str(p.title)}})
             _task = create_task(str(DATASET_MARKER),str(r['timestamp']),str(p.pageid),str(random.randint(100000,99999999)),str(p.pageid),str(p.title),_revs,str(p.url))
             print (_task)
-            #tableservice.insert_entity(AZURE_TABLE, _task)
+            tableservice.insert_entity(AZURE_TABLE, _task)
         except Exception as e:
             print("Error: %s" % e)
             continue
