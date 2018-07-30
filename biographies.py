@@ -87,26 +87,30 @@ def main():
 
     table_data = {}
 
+    tableservice = table_service()    
+
     for r in _tmpb:
         try:
             requests.packages.urllib3.disable_warnings()
             print(r)
             p = wikipedia.page(title=None,pageid=str(r['pageid']))
-            table_data.update({str(r['pageid']):{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched),'URL': str(p.url),'TITLE': str(p.title)}})
+            _revs = [r for r in get_revisions(str(t)) if "delet" in str(r)]
+            #table_data.update({str(r['pageid']):{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched),'URL': str(p.url),'TITLE': str(p.title)}})
+            _task = create_task(str(DATASET_MARKER),str(p.touched),str(p.pageid),str(random.randint(100000,99999999)),str(p.pageid),str(p.title),_revs,str(p.url))
+            print (_task)
+            #tableservice.insert_entity(AZURE_TABLE, _task)
         except Exception as e:
             print("Error: %s" % e)
             continue
 
-    tableservice = table_service()
+    #keys = [x for x in table_data.keys()]
+    #values = [x for x in table_data.values()]
 
-    keys = [x for x in table_data.keys()]
-    values = [x for x in table_data.values()]
-
-    for index, t in enumerate(keys):
-        _revs = [r for r in get_revisions(str(t)) if "delet" in str(r)]
-        _task = create_task(str(DATASET_MARKER),str(values[index]['TOUCHED']),str(values[index]['PAGEID']),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(values[index]['TITLE']),_revs,str(values[index]['URL']))
-        print (_task)
-        tableservice.insert_entity(AZURE_TABLE, _task)
+    #for index, t in enumerate(keys):
+    #    _revs = [r for r in get_revisions(str(t)) if "delet" in str(r)]
+    #    _task = create_task(str(DATASET_MARKER),str(values[index]['TOUCHED']),str(values[index]['PAGEID']),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(values[index]['TITLE']),_revs,str(values[index]['URL']))
+    #    print (_task)
+    #    tableservice.insert_entity(AZURE_TABLE, _task)
 
 if __name__ == '__main__':
     main()
