@@ -89,10 +89,9 @@ def main():
 
     tableservice = table_service()    
     requests.packages.urllib3.disable_warnings()
-    
+
     for r in _tmpb:
         try:
-            
             print(r)
             p = wikipedia.page(title=None,pageid=str(r['pageid']))
             _revs = [r for r in get_revisions(str(p.pageid)) if "delet" in str(r)]
