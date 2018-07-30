@@ -47,7 +47,7 @@ def create_task(dataset_marker,created,row_key,part_key,page_id,title,revs,url):
         'PartitionKey': part_key, 
         'RowKey': row_key, 
         'PAGEID': page_id, 
-        'TOUCHED': created,
+        'CREATED': created,
         'TITLE': title, 
         'URL': url,
         'DATASET': dataset_marker
