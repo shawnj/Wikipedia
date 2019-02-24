@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import requests
+import urllib3
 import time
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
@@ -148,7 +149,7 @@ def rawsearch(query, results=10):
   return raw_results
 
 @cache
-def logsearch(title, logtype, results=max):
+def logsearch(title, logtype, results=500):
   '''
   Do a Wikipedia search for `query`.
 
@@ -161,8 +162,7 @@ def logsearch(title, logtype, results=max):
   search_params = {
     'list': 'logevents',
     'lelimit': results,
-    'limit': results,
-    'letype': logtype,
+    #'letype': logtype,
     'letitle': title
   }
 

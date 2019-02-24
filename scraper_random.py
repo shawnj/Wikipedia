@@ -1,4 +1,4 @@
-import requests
+import urllib3
 import sys
 import random
 from wikipedia import wikipedia
@@ -22,9 +22,9 @@ def get_random_articles():
     '''
         Gets random articles sets
     '''
-    requests.packages.urllib3.disable_warnings()
+    urllib3.disable_warnings()
 
-    _titles = wikipedia.random_id(pages=500)
+    _titles = wikipedia.random_id(pages=10)
     
     return _titles
 
@@ -118,9 +118,9 @@ def table_service():
     account_key = config_update.get('AccountKey')
 
     # Instance of TableService
-    __table_service__ = TableService(account_name=account_name, account_key=account_key)
+    table_service = TableService(account_name=account_name, account_key=account_key)
 
-    return __table_service__
+    return table_service
 
 def main():
 
