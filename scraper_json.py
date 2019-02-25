@@ -51,7 +51,7 @@ def get_templates(item):
 
 def get_revisions(item):
     try:
-        _revs = wikipedia.revisionsearch(item, title=True)
+        _revs = wikipedia.revisionsearch(item, title=False)
         return _revs
     except: 
         return list()
@@ -154,10 +154,10 @@ def main():
 
     for r in collection:
         if is_deleted(collection[r]['id']):
-            table_data.update({r:{'PAGEID': "Deleted",'TOUCHED': "Deleted", 'URL': "Deleted"}})
+            table_data.update({collection[r]['id']:{'TITLE': str(r),'PAGEID': "Deleted",'TOUCHED': "Deleted", 'URL': "Deleted"}})
         else:
             p = wikipedia.page(pageid=collection[r]['id'])
-            table_data.update({r:{'PAGEID': str(p.pageid),'TOUCHED': str(p.touched), 'URL': str(p.url)}})
+            table_data.update({collection[r]['id']:{'TITLE': str(r), 'PAGEID': str(p.pageid),'TOUCHED': str(p.touched), 'URL': str(p.url)}})
         count -= 1
         sys.stdout.write("\r%d%%" % count)
         sys.stdout.flush()
@@ -168,15 +168,16 @@ def main():
     values = [x for x in table_data.values()]
 
     for index, t in enumerate(keys):
-        print (t)
+        print (values[index]['TITLE'])
 
-        logs = get_logdata(str(t), '')
-        #revs = get_revisions(str(t))
-        for l in logs:
+        #logs = get_logdata(str(t), '')
+        revs = get_revisions(str(t))
+        print (str(len(revs)))
+        for l in revs:
             print (l)
             if 'commenthidden' not in l:
-            #    task = create_task_revs(str(DATASET_MARKER),str(CAMPAIGN_NAME),str(values[index]['TOUCHED']),str(random.randint(100000,99999999)),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(t),str(values[index]['URL']),str(l['revid']),str(l['parentid']),str(l['user']),str(l['timestamp']),str(l['comment']))
-                task = create_task_logs(str(DATASET_MARKER),str(CAMPAIGN_NAME),str(values[index]['TOUCHED']),str(random.randint(100000,99999999)),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(t),str(values[index]['URL']),str(l['logid']),str(l['logpage']),str(l['params']),str(l['type']),str(l['action']),str(l['user']),str(l['timestamp']),str(l['comment']))
+                task = create_task_revs(str(DATASET_MARKER),str(CAMPAIGN_NAME),str(values[index]['TOUCHED']),str(random.randint(100000,99999999)),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),str(values[index]['TITLE']),str(values[index]['URL']),str(l['revid']),str(l['parentid']),str(l['user']),str(l['timestamp']),str(l['comment']))
+                #task = create_task_logs(str(DATASET_MARKER),str(CAMPAIGN_NAME),str(values[index]['TOUCHED']),str(random.randint(100000,99999999)),str(random.randint(100000,99999999)),str(values[index]['PAGEID']),values[index]['TITLE'],str(values[index]['URL']),str(l['logid']),str(l['logpage']),str(l['params']),str(l['type']),str(l['action']),str(l['user']),str(l['timestamp']),str(l['comment']))
                 tableservice.insert_entity(AZURE_TABLE, task)
 
 if __name__ == '__main__':
